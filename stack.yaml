@@ -5,3 +5,4 @@ packages:
 extra-deps: []
 allow-newer: true
 compiler: ghc-8.10.7
+arch: x86_64
