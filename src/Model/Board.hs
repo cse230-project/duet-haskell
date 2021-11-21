@@ -48,7 +48,7 @@ data Pos = Pos
 board ! pos = M.lookup pos board
 
 dim :: Int
-dim = 3
+dim = 20
 
 positions :: [Pos]
 positions = [ Pos r c | r <- [1..dim], c <- [1..dim] ] 
@@ -57,7 +57,7 @@ emptyPositions :: Board -> [Pos]
 emptyPositions board  = [ p | p <- positions, M.notMember p board]
 
 init :: Board
-init = M.empty
+init =  M.fromList [(Pos 1 5, O), (Pos 1 2, O)]
 
 -------------------------------------------------------------------------------
 -- | Playing a Move
