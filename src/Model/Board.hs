@@ -10,6 +10,8 @@ module Model.Board
   , dim
   , (!)
   , init
+  , initBlue
+  , initRed
   , put
   , positions
   , emptyPositions
@@ -19,14 +21,14 @@ module Model.Board
     -- * Moves
   , up
   , down
-  , left
-  , right
+  , clockwise
+  , counterClockwise
   )
   where
 
 import Prelude hiding (init)
 import qualified Data.Map as M 
-
+import Data.List (elemIndex)
 -------------------------------------------------------------------------------
 -- | Board --------------------------------------------------------------------
 -------------------------------------------------------------------------------
@@ -35,7 +37,8 @@ type Board = M.Map Pos XO
 
 data XO 
   = X 
-  | O
+  | RedO
+  | BlueO
   deriving (Eq, Show)
 
 data Pos = Pos 
@@ -48,7 +51,7 @@ data Pos = Pos
 board ! pos = M.lookup pos board
 
 dim :: Int
-dim = 20
+dim = 50
 
 positions :: [Pos]
 positions = [ Pos r c | r <- [1..dim], c <- [1..dim] ] 
@@ -57,8 +60,14 @@ emptyPositions :: Board -> [Pos]
 emptyPositions board  = [ p | p <- positions, M.notMember p board]
 
 init :: Board
-init =  M.fromList [(Pos 1 5, O), (Pos 1 2, O)]
+-- init =  M.fromList [(Pos 17 7, BlueO), (Pos 17 13, RedO)]
+init = M.empty 
 
+initBlue :: Pos
+initBlue = Pos 40 15
+
+initRed :: Pos
+initRed = Pos 40 35
 -------------------------------------------------------------------------------
 -- | Playing a Move
 -------------------------------------------------------------------------------
@@ -79,7 +88,8 @@ result :: Board -> Result Board
 result b 
   | isFull b  = Draw
   | wins b X  = Win  X 
-  | wins b O  = Win  O
+  | wins b RedO  = Win  RedO
+  | wins b BlueO = Win  BlueO
   | otherwise = Cont b
 
 wins :: Board -> XO -> Bool
@@ -113,21 +123,24 @@ down p = p
   { pRow = min dim (pRow p + 1) 
   } 
 
-left :: Pos -> Pos 
-left p = p 
-  { pCol   = max 1 (pCol p - 1) 
-  } 
+posList :: [Pos]
+posList = [Pos 40 15, Pos 45 20, Pos 50 25, Pos 45 30, Pos 40 35, Pos 35 30, Pos 30 25, Pos 35 20]
 
-right :: Pos -> Pos 
-right p = p 
-  { pCol = min dim (pCol p + 1) 
-  } 
+nextPos :: Pos -> Int -> Pos
+nextPos p dir = case elemIndex p posList of
+    Just i -> posList !! ((i + dir) `mod` length posList)
+    Nothing -> p
+clockwise :: Pos -> Pos 
+clockwise p = nextPos p 1
+
+counterClockwise :: Pos -> Pos 
+counterClockwise p = nextPos p (-1)
 
 boardWinner :: Result a -> Maybe XO
 boardWinner (Win xo) = Just xo
 boardWinner _        = Nothing
 
 flipXO :: XO -> XO
-flipXO X = O
-flipXO O = X
+flipXO X = BlueO
+flipXO BlueO = X
 
