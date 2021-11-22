@@ -24,7 +24,8 @@ data PlayState = PS
   { psX      :: Player.Player   -- ^ player X info
   , psO      :: Player.Player   -- ^ player O info
   -- , psScore  :: Score.Score     -- ^ current score
-  , psBoard  :: Board.Board     -- ^ current board
+  , psBoard  :: Board.Board     -- ^ placeholder
+  , psObs     :: Board.Obs      -- ^ current board
   , psTurn   :: Board.XO        -- ^ whose turn 
   , bluePos    :: Board.Pos       -- ^ blue vessel
   , redPos    :: Board.Pos       -- ^ red
@@ -37,6 +38,7 @@ init n = PS
   , psO      = Player.rando
   -- , psScore  = Score.init n
   , psBoard  = Board.init
+  , psObs  = Board.initObs
   , psTurn   = Board.X
   , bluePos  = Board.initBlue
   , redPos   = Board.initRed

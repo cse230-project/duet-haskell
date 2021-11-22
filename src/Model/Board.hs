@@ -2,6 +2,7 @@
 module Model.Board 
   ( -- * Types
     Board
+  , Obs
   , XO (..)
   , Pos (..)
   , Result (..)
@@ -12,6 +13,7 @@ module Model.Board
   , init
   , initBlue
   , initRed
+  , initObs
   , put
   , positions
   , emptyPositions
@@ -19,7 +21,6 @@ module Model.Board
   , flipXO
 
     -- * Moves
-  , up
   , down
   , clockwise
   , counterClockwise
@@ -33,6 +34,7 @@ import Data.List (elemIndex)
 -- | Board --------------------------------------------------------------------
 -------------------------------------------------------------------------------
 
+type Obs = [Pos]
 type Board = M.Map Pos XO
 
 data XO 
@@ -62,6 +64,10 @@ emptyPositions board  = [ p | p <- positions, M.notMember p board]
 init :: Board
 -- init =  M.fromList [(Pos 17 7, BlueO), (Pos 17 13, RedO)]
 init = M.empty 
+
+initObs :: Obs
+-- initObs = [ Pos r c | r <- [1], c <- [1..10] ] 
+initObs = [Pos 1 1, Pos (-5) 1, Pos (-15) 16]
 
 initBlue :: Pos
 initBlue = Pos 40 15
@@ -113,18 +119,12 @@ isFull b = M.size b == dim * dim
 -- | Moves 
 -------------------------------------------------------------------------------
 
-up :: Pos -> Pos 
-up p = p 
-  { pRow = max 1 (pRow p - 1) 
-  } 
-
-down :: Pos -> Pos
-down p = p 
-  { pRow = min dim (pRow p + 1) 
-  } 
+down :: [Pos] -> [Pos]
+down ps = [ p
+ { pRow = min (dim + 1) (pRow p + 1) } | p <- ps ]
 
 posList :: [Pos]
-posList = [Pos 40 15, Pos 45 20, Pos 50 25, Pos 45 30, Pos 40 35, Pos 35 30, Pos 30 25, Pos 35 20]
+posList = [Pos 40 15, Pos 41 16, Pos 42 17, Pos 43 18, Pos 44 19, Pos 45 20, Pos 46 21, Pos 47 22, Pos 48 23, Pos 49 24, Pos 50 25, Pos 49 26, Pos 48 27, Pos 47 28, Pos 46 29, Pos 45 30, Pos 44 31, Pos 43 32, Pos 42 33, Pos 41 34, Pos 40 35, Pos 39 34, Pos 38 33, Pos 37 32, Pos 36 31, Pos 35 30, Pos 34 29, Pos 33 28, Pos 32 27, Pos 31 26, Pos 30 25, Pos 31 24, Pos 32 23, Pos 33 22, Pos 34 21, Pos 35 20, Pos 36 19, Pos 37 18, Pos 38 17, Pos 39 16]
 
 nextPos :: Pos -> Int -> Pos
 nextPos p dir = case elemIndex p posList of

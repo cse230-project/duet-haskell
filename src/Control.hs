@@ -14,11 +14,8 @@ import Model.Player ( Player(plStrat), Strategy )
 
 control :: PlayState -> BrickEvent n Tick -> EventM n (Next PlayState)
 control s ev = case ev of 
-  AppEvent Tick                   -> nextS s =<< liftIO (play BlueO s)
-  -- T.VtyEvent (V.EvKey V.KEnter _) -> nextS s =<< liftIO (play X s)
-  -- T.VtyEvent (V.EvKey V.KUp   _)  -> Brick.continue (move up    s)
-  -- T.VtyEvent (V.EvKey V.KDown _)  -> Brick.continue (move down  s)
-  T.VtyEvent (V.EvKey V.KLeft _)  -> Brick.continue (move clockwise  s)
+  AppEvent Tick                   -> Brick.continue (step s)
+  T.VtyEvent (V.EvKey V.KLeft _)  -> Brick.continue (move clockwise s)
   T.VtyEvent (V.EvKey V.KRight _) -> Brick.continue (move counterClockwise s)
   T.VtyEvent (V.EvKey V.KEsc _)   -> Brick.halt s
   _                               -> Brick.continue s -- Brick.halt s
@@ -27,6 +24,11 @@ control s ev = case ev of
 move :: (Pos -> Pos) -> PlayState -> PlayState
 -------------------------------------------------------------------------------
 move f s = s { bluePos = f (bluePos s), redPos = f (redPos s) }
+
+-------------------------------------------------------------------------------
+step :: PlayState -> PlayState
+-------------------------------------------------------------------------------
+step s = s { psObs = down (psObs s) }
 
 -------------------------------------------------------------------------------
 play :: XO -> PlayState -> IO (Result Board)
