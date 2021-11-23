@@ -1,7 +1,6 @@
 module View (view) where
 
 import Brick
-import Brick.Widgets.Core (fill)
 import Brick.Widgets.Center (center)
 import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
 import Brick.Widgets.Border.Style (unicode)
@@ -54,9 +53,12 @@ blueO = vBox [ str "🔵" ]
 redO = vBox [ str "🔴" ]
 
 header :: PlayState -> String
-header s = printf "Duet Game GameOver = %s, row = %d, col = %d" (show (gameOver s))(pRow (head p))(pRow (head p))
+header s = case (gameOver s) of 
+  True  -> printf "Gameover!!!!!!!!!!!!!!!!"
+  False -> printf "Duet Game GameOver = %s, row = %d, col = %d, blueRow = %d, blueCol = %d" (show (gameOver s))(pRow (head p))(pRow (head p))(pRow b)(pRow b)
   where 
     p = psObs s
+    b = bluePos s
 
 mkRow :: PlayState -> Int -> Widget n
 mkRow s row = hTile [ mkCell s row i | i <- [1..dim] ]
