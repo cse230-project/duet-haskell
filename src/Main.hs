@@ -33,7 +33,7 @@ app = App
   , appChooseCursor = const . const Nothing
   , appHandleEvent  = control 
   , appStartEvent   = return
-  , appAttrMap      = const (attrMap defAttr [])
+  , appAttrMap      = const theMap
   }
 
 getRounds :: IO (Maybe Int)

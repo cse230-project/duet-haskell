@@ -1,4 +1,4 @@
-module View (view) where
+module View (view, theMap) where
 
 import Brick
 import Brick.Widgets.Center (center)
@@ -49,8 +49,8 @@ mkXO (Just BlueO) = blueO
 blockB, blockX, blueO, redO :: Widget n
 blockB = vBox [ str "  " ]
 blockX = vBox [ str "██" ]
-blueO = vBox [ str "🔵" ]
-redO = vBox [ str "🔴" ]
+blueO = withAttr blueAttr $ vBox [ str "  " ]
+redO = withAttr redAttr $ vBox [ str "  " ]
 
 header :: PlayState -> String
 header s = case (gameOver s) of 
@@ -60,13 +60,13 @@ header s = case (gameOver s) of
     p = psObs s
     b = bluePos s
 
-mkRow :: PlayState -> Int -> Widget n
-mkRow s row = hTile [ mkCell s row i | i <- [1..dim] ]
+blueAttr, redAttr :: AttrName
+blueAttr = attrName "blueAttr"
+redAttr = attrName "redAttr"
 
-vTile :: [Widget n] -> Widget n
-vTile (b:bs) = vBox (b : [hBorder <=> b | b <- bs])
-vTile _      = emptyWidget
 
-hTile :: [Widget n] -> Widget n
-hTile (b:bs) = hBox (b : [vBorder <+> b | b <- bs])
-hTile _      = emptyWidget
+theMap :: AttrMap
+theMap = attrMap defAttr
+  [ (blueAttr, blue `on` blue)
+  , (redAttr, red `on` red)
+  ]
