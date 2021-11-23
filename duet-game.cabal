@@ -1,4 +1,4 @@
-name:                brick-tac-toe
+name:                duet-game
 version:             0.1.0.0
 license:             MIT
 license-file:        LICENSE
@@ -9,7 +9,7 @@ build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
-executable brick-tac-toe
+executable duet-game
   main-is:             Main.hs
   build-depends:       base >=4.9, 
                        random >=1.1 && <1.2,
@@ -21,8 +21,7 @@ executable brick-tac-toe
                        Control,
                        Model, 
                        Model.Board,
-                       Model.Score,
-                       Model.Player
+                       Model.Score
 		       
   default-language:    Haskell2010
   ghc-options:       -W -threaded

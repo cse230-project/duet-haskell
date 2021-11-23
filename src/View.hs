@@ -54,7 +54,9 @@ blueO = vBox [ str "🔵" ]
 redO = vBox [ str "🔴" ]
 
 header :: PlayState -> String
-header s = printf "Duet Game GameOver = %s" (show (gameOver s))
+header s = printf "Duet Game GameOver = %s, row = %d, col = %d" (show (gameOver s))(pRow (head p))(pRow (head p))
+  where 
+    p = psObs s
 
 mkRow :: PlayState -> Int -> Widget n
 mkRow s row = hTile [ mkCell s row i | i <- [1..dim] ]
