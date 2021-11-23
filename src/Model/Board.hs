@@ -1,35 +1,40 @@
 {-# LANGUAGE DeriveFunctor #-}
+
 module Model.Board
   ( -- * Types
-    Board
-  , Obs
-  , XO (..)
-  , Pos (..)
-  , Result (..)
+    Board,
+    Obs,
+    XO (..),
+    Pos (..),
+    Result (..),
 
     -- * Board API
-  , dim
-  , init
-  , initBlue
-  , initRed
-  , initObs
+    dim,
+    init,
+    initBlue,
+    initRed,
+    initObs,
 
     -- * Moves
-  , down
-  , clockwise
-  , counterClockwise
-  , check
+    down,
+    clockwise,
+    counterClockwise,
+    check,
   )
-  where
+where
 
-import Prelude hiding (init)
-import qualified Data.Map as M
 import Data.List (elemIndex)
+import qualified Data.Map as M
+import Prelude hiding (init)
+
 -------------------------------------------------------------------------------
+
 -- | Board --------------------------------------------------------------------
+
 -------------------------------------------------------------------------------
 
 type Obs = [Pos]
+
 type Board = M.Map Pos XO
 
 data XO
@@ -39,8 +44,8 @@ data XO
   deriving (Eq, Show)
 
 data Pos = Pos
-  { pRow :: Int  -- 1 <= pRow <= dim 
-  , pCol :: Int  -- 1 <= pCol <= dim
+  { pRow :: Int, -- 1 <= pRow <= dim
+    pCol :: Int -- 1 <= pCol <= dim
   }
   deriving (Eq, Ord)
 
@@ -52,7 +57,7 @@ init :: Board
 init = M.empty
 
 initObs :: Obs
--- initObs = [ Pos r c | r <- [1], c <- [1..10] ] 
+-- initObs = [ Pos r c | r <- [1], c <- [1..10] ]
 initObs = [Pos 1 1, Pos (-5) 1, Pos (-15) 16]
 
 initBlue :: Pos
@@ -60,8 +65,11 @@ initBlue = Pos 40 15
 
 initRed :: Pos
 initRed = Pos 40 35
+
 -------------------------------------------------------------------------------
+
 -- | Playing a Move
+
 -------------------------------------------------------------------------------
 
 data Result a
@@ -72,11 +80,13 @@ data Result a
   deriving (Eq, Functor, Show)
 
 -------------------------------------------------------------------------------
--- | Moves 
+
+-- | Moves
+
 -------------------------------------------------------------------------------
 
 down :: [Pos] -> [Pos]
-down ps = [ p { pRow = min (dim + 1) (pRow p + 1) } | p <- ps ]
+down ps = [p {pRow = min (dim + 1) (pRow p + 1)} | p <- ps]
 
 check :: [Pos] -> Pos -> Pos -> Bool
 check ps blue red = collision1 || collision2 || collision3 || collision4
@@ -91,8 +101,9 @@ posList = [Pos 40 15, Pos 41 16, Pos 42 17, Pos 43 18, Pos 44 19, Pos 45 20, Pos
 
 nextPos :: Pos -> Int -> Pos
 nextPos p dir = case elemIndex p posList of
-    Just i -> posList !! ((i + dir) `mod` length posList)
-    Nothing -> p
+  Just i -> posList !! ((i + dir) `mod` length posList)
+  Nothing -> p
+
 clockwise :: Pos -> Pos
 clockwise p = nextPos p 1
 
