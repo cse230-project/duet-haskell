@@ -35,8 +35,8 @@ mkCell s r c = center (mkXO xoMb)
     xoMb
       | r == Board.pRow (bluePos s) && c == Board.pCol (bluePos s) = Just BlueO
       | r == Board.pRow (redPos s) && c == Board.pCol (redPos s) = Just RedO
-      | Pos r 1 `elem` psObs s && c < 35 = Just X
-      | Pos r 16 `elem` psObs s && c > 15 = Just X
+      | Pos r 1 `elem` psObs s && c < 30 = Just X
+      | Pos r 21 `elem` psObs s && c > 20 = Just X
       | otherwise = Nothing
 
 mkXO :: Maybe XO -> Widget n
