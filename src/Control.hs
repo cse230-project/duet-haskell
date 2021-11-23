@@ -28,7 +28,9 @@ move f s = s { bluePos = f (bluePos s), redPos = f (redPos s) }
 -------------------------------------------------------------------------------
 step :: PlayState -> PlayState
 -------------------------------------------------------------------------------
-step s = s { psObs = down (psObs s) }
+step s =
+  s { psObs = down (psObs s), 
+      gameOver = check (psObs s) (bluePos s) (redPos s) }
 
 -------------------------------------------------------------------------------
 play :: XO -> PlayState -> IO (Result Board)

@@ -24,6 +24,8 @@ module Model.Board
   , down
   , clockwise
   , counterClockwise
+  , check
+  , clear
   )
   where
 
@@ -85,11 +87,6 @@ data Result a
   | Cont a
   deriving (Eq, Functor, Show)
 
-put :: Board -> XO -> Pos -> Result Board
-put board xo pos = case M.lookup pos board of 
-  Just _  -> Retry
-  Nothing -> result (M.insert pos xo board) 
-
 result :: Board -> Result Board
 result b 
   | isFull b  = Draw
@@ -122,6 +119,23 @@ isFull b = M.size b == dim * dim
 down :: [Pos] -> [Pos]
 down ps = [ p
  { pRow = min (dim + 1) (pRow p + 1) } | p <- ps ]
+
+check :: [Pos] -> Pos -> Pos -> Bool
+check ps blue red = collision1 || collision2 || collision3 || collision4
+  where 
+    collision1 = Pos (pRow blue) 1 `elem` ps && (pCol blue < 35)
+    collision2 = Pos (pRow red) 1 `elem` ps && (pCol red < 35)
+    collision3 = Pos (pRow blue) 16 `elem` ps && (pCol blue > 15)
+    collision4 = Pos (pRow red) 16 `elem` ps && (pCol red > 15)
+
+clear :: [Pos] -> [Pos]
+clear ps = []
+
+put :: Board -> XO -> Pos -> Result Board
+put board xo pos = case M.lookup pos board of 
+  Just _  -> Retry
+  Nothing -> result (M.insert pos xo board) 
+
 
 posList :: [Pos]
 posList = [Pos 40 15, Pos 41 16, Pos 42 17, Pos 43 18, Pos 44 19, Pos 45 20, Pos 46 21, Pos 47 22, Pos 48 23, Pos 49 24, Pos 50 25, Pos 49 26, Pos 48 27, Pos 47 28, Pos 46 29, Pos 45 30, Pos 44 31, Pos 43 32, Pos 42 33, Pos 41 34, Pos 40 35, Pos 39 34, Pos 38 33, Pos 37 32, Pos 36 31, Pos 35 30, Pos 34 29, Pos 33 28, Pos 32 27, Pos 31 26, Pos 30 25, Pos 31 24, Pos 32 23, Pos 33 22, Pos 34 21, Pos 35 20, Pos 36 19, Pos 37 18, Pos 38 17, Pos 39 16]

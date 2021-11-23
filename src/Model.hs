@@ -29,7 +29,8 @@ data PlayState = PS
   , psTurn   :: Board.XO        -- ^ whose turn 
   , bluePos    :: Board.Pos       -- ^ blue vessel
   , redPos    :: Board.Pos       -- ^ red
-  , psResult :: Board.Result () -- ^ result      
+  , psResult :: Board.Result () -- ^ result    
+  , gameOver :: Bool 
   } 
 
 init :: Int -> PlayState
@@ -43,6 +44,7 @@ init n = PS
   , bluePos  = Board.initBlue
   , redPos   = Board.initRed
   , psResult = Board.Cont ()
+  , gameOver = False
   }
 
 isCurr :: PlayState -> Int -> Int -> Bool

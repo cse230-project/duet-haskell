@@ -26,7 +26,7 @@ view' s =
       -- vTile [ mkRow s row | row <- [1..dim] ]
       vLimit 50 $ vBox rows
       where
-        rows         = [hLimit 50 $ hBox $ cellsInRow r | r <- [1..dim]]
+        rows         = [hLimit 100 $ hBox $ cellsInRow r | r <- [1..dim]]
         cellsInRow r = [mkCell s r c | c <- [1..dim]]
 
 mkCell :: PlayState -> Int -> Int -> Widget n
@@ -48,15 +48,13 @@ mkXO (Just RedO) = redO
 mkXO (Just BlueO) = blueO
 
 blockB, blockX, blueO, redO :: Widget n
-blockB = vBox [ str " " ]
-blockX = vBox [ str "😅" ]
+blockB = vBox [ str "  " ]
+blockX = vBox [ str "██" ]
 blueO = vBox [ str "🔵" ]
 redO = vBox [ str "🔴" ]
 
 header :: PlayState -> String
-header s = printf "Tic-Tac-Toe Turn = %s, row = %d, col = %d" (show (psTurn s)) (pRow p) (pCol p)
-  where 
-    p    = bluePos s
+header s = printf "Duet Game GameOver = %s" (show (gameOver s))
 
 mkRow :: PlayState -> Int -> Widget n
 mkRow s row = hTile [ mkCell s row i | i <- [1..dim] ]
