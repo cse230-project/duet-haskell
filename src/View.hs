@@ -38,6 +38,7 @@ mkCell s r c = center (mkXO xoMb)
       | r == Board.pRow (redPos s) && c == Board.pCol (redPos s) = Just RedO
       | Pos r 1 `elem` psObs s && c < 30 = Just X
       | Pos r 21 `elem` psObs s && c > 20 = Just X
+      | Pos r 20 `elem` psObs s && c > 19 && c < 31 = Just X
       | otherwise = Nothing
 
 mkXO :: Maybe XO -> Widget n
@@ -55,21 +56,22 @@ redO = withAttr redAttr $ vBox [str "  "]
 header :: PlayState -> String
 header s =
   if gameOver s
-    then printf "♢♢ Gameover! ♢♢ Score = %d ♢♢" (Score.score (psScore s))
+    then 
+      printf "♢♢ Gameover! ♢♢ Level %d ♢♢ Score = %d ♢♢" (Score.speed sc) (Score.score sc)
     else
-      printf "♢♢ Duet Game ♢♢ Speed = %d ♢♢ Score = %d ♢♢" (Score.speed sc) (Score.score sc)
-        where 
-          sc = psScore s
-        -- debug message
-        -- "Duet Game GameOver = %s, row = %d, col = %d, blueRow = %d, blueCol = %d"
-        -- (show (gameOver s))
-        -- (pRow (head p))
-        -- (pRow (head p))
-        -- (pRow b)
-        -- (pRow b)
-        -- where
-        --   p = psObs s
-        --   b = bluePos s
+      printf "♢♢ Duet Game ♢♢ Level %d ♢♢ Score = %d ♢♢" (Score.speed sc) (Score.score sc)
+  where 
+    sc = psScore s
+  -- debug message
+  -- "Duet Game GameOver = %s, row = %d, col = %d, blueRow = %d, blueCol = %d"
+  -- (show (gameOver s))
+  -- (pRow (head p))
+  -- (pRow (head p))
+  -- (pRow b)
+  -- (pRow b)
+  -- where
+  --   p = psObs s
+  --   b = bluePos s
 
 blueAttr, redAttr :: AttrName
 blueAttr = attrName "blueAttr"

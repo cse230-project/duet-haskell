@@ -21,7 +21,7 @@ main = do
   forkIO $
     forever $ do
       writeBChan chan Tick
-      threadDelay 200000 -- decides how fast your game moves
+      threadDelay (getDelay speed) -- decides how fast your game moves
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
   res <- customMain initialVty buildVty (Just chan) app (Model.init speed)
@@ -36,6 +36,10 @@ app =
       appStartEvent = return,
       appAttrMap = const theMap
     }
+
+speeds = [200000, 150000, 100000]
+getDelay :: Int -> Int
+getDelay n =  speeds !! (n - 1)
 
 getSpeed :: IO (Maybe Int)
 getSpeed = do
