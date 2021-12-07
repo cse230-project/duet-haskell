@@ -16,7 +16,7 @@ import View
 -------------------------------------------------------------------------------
 main :: IO ()
 main = do
-  rounds <- fromMaybe defaultRounds <$> getRounds
+  speed <- fromMaybe defaultSpeed <$> getSpeed
   chan <- newBChan 10
   forkIO $
     forever $ do
@@ -24,7 +24,7 @@ main = do
       threadDelay 200000 -- decides how fast your game moves
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
-  res <- customMain initialVty buildVty (Just chan) app (Model.init rounds)
+  res <- customMain initialVty buildVty (Just chan) app (Model.init speed)
   print (psResult res)
 
 app :: App PlayState Tick String
@@ -37,12 +37,12 @@ app =
       appAttrMap = const theMap
     }
 
-getRounds :: IO (Maybe Int)
-getRounds = do
+getSpeed :: IO (Maybe Int)
+getSpeed = do
   args <- getArgs
   case args of
     (str : _) -> return (readMaybe str)
     _ -> return Nothing
 
-defaultRounds :: Int
-defaultRounds = 1
+defaultSpeed :: Int
+defaultSpeed = 1

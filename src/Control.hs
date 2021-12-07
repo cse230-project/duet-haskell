@@ -4,10 +4,11 @@ import Brick hiding (Result)
 import qualified Brick.Types as T
 import qualified Graphics.Vty as V
 import Model
-  ( PlayState (bluePos, gameOver, psObs, redPos),
+  ( PlayState (psScore, bluePos, gameOver, psObs, redPos),
     Tick (..),
   )
 import Model.Board
+import Model.Score
 
 -------------------------------------------------------------------------------
 
@@ -33,5 +34,6 @@ step s =
     else
       s
         { psObs = down (psObs s),
+          psScore = updateScore (psObs s) (psScore s) ,
           gameOver = check (psObs s) (bluePos s) (redPos s)
         }

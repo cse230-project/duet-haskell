@@ -11,6 +11,7 @@ import Model
 import qualified Model as Board
 import Model.Board
 import qualified Model.Board as Board
+import qualified Model.Score as Score
 import Text.Printf (printf)
 
 -------------------------------------------------------------------------------
@@ -54,18 +55,21 @@ redO = withAttr redAttr $ vBox [str "  "]
 header :: PlayState -> String
 header s =
   if gameOver s
-    then printf "Gameover!!!!!!!!!!!!!!!!"
+    then printf "♢♢ Gameover! ♢♢ Score = %d ♢♢" (Score.score (psScore s))
     else
-      printf
-        "Duet Game GameOver = %s, row = %d, col = %d, blueRow = %d, blueCol = %d"
-        (show (gameOver s))
-        (pRow (head p))
-        (pRow (head p))
-        (pRow b)
-        (pRow b)
-  where
-    p = psObs s
-    b = bluePos s
+      printf "♢♢ Duet Game ♢♢ Speed = %d ♢♢ Score = %d ♢♢" (Score.speed sc) (Score.score sc)
+        where 
+          sc = psScore s
+        -- debug message
+        -- "Duet Game GameOver = %s, row = %d, col = %d, blueRow = %d, blueCol = %d"
+        -- (show (gameOver s))
+        -- (pRow (head p))
+        -- (pRow (head p))
+        -- (pRow b)
+        -- (pRow b)
+        -- where
+        --   p = psObs s
+        --   b = bluePos s
 
 blueAttr, redAttr :: AttrName
 blueAttr = attrName "blueAttr"

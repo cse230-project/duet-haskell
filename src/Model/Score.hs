@@ -1,31 +1,37 @@
 {-# LANGUAGE RecordWildCards #-}
 module Model.Score where
 
-import Model.Board (Result (..), XO (..))
+import Model.Board as Board
+import Data.Foldable
+import Control.Monad 
 
 -- -------------------------------------------------------------------------------
 -- -- | Score --------------------------------------------------------------------
 -- -------------------------------------------------------------------------------
 
--- data Score = Score 
---   { scMax  :: Int  -- ^ total number of boards
---   , scX    :: Int  -- ^ points for player X 
---   , scO    :: Int  -- ^ points for player O 
---   , scD    :: Int  -- ^ drawn games 
---   }
---   deriving (Eq, Ord, Show)
+data Score = Score 
+  { 
+    speed   :: Int,
+    score   :: Int
+  }
+  deriving (Eq, Ord, Show)
 
--- init :: Int -> Score
--- init n = Score n 0 0 0
+init :: Int -> Score
+init n = Score n 0
 
--- add :: Score -> Maybe XO -> Score
--- add sc (Just X) = sc { scX = scX sc + 1 }
--- add sc (Just O) = sc { scO = scO sc + 1 }
--- add sc Nothing  = sc { scD = scD sc + 1 }
+add :: Score -> Score
+add sc  = sc { score = score sc + speed sc }
 
--- get :: Score -> XO -> Int
--- get Score {..} X = scX 
--- get Score {..} O = scO 
+clear :: Score -> Score
+clear sc  = sc { score = 0 }
+
+updateScore :: [Pos] -> Score -> Score
+updateScore ps sc = foldr f (clear sc) ps
+    where 
+        f p s = if (pRow p == dim + 1) then (add s) else s
+        
+-- get :: Score -> Int
+-- get sc = sc score
 
 -- currRound :: Score -> Int
 -- currRound Score {..} = scX + scO + scD + 1

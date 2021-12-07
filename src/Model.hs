@@ -5,7 +5,7 @@ module Model where
 import qualified Model.Board as Board
 import Prelude hiding ((!!))
 
--- import qualified Model.Score  as Score
+import qualified Model.Score  as Score
 
 -------------------------------------------------------------------------------
 
@@ -26,9 +26,7 @@ data State
   | Outro
 
 data PlayState = PS
-  { -- , psScore  :: Score.Score     -- ^ current score
-
-    -- | placeholder
+  { psScore  :: Score.Score,     -- ^ current score
     psBoard :: Board.Board,
     -- | current board
     psObs :: Board.Obs,
@@ -46,7 +44,7 @@ data PlayState = PS
 init :: Int -> PlayState
 init n =
   PS
-    { -- , psScore  = Score.init n
+    { psScore  = Score.init n,
       psBoard = Board.init,
       psObs = Board.initObs,
       psTurn = Board.X,
