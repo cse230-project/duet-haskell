@@ -28,7 +28,7 @@ clear sc  = sc { score = 0 }
 updateScore :: [Pos] -> Score -> Score
 updateScore ps sc = foldr f (clear sc) ps
     where 
-        f p s = if (pRow p == dim + 1) then (add s) else s
+        f p s = if pRow p > dim then add s else s
         
 -- get :: Score -> Int
 -- get sc = sc score

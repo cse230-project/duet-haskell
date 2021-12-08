@@ -81,6 +81,6 @@ theMap :: AttrMap
 theMap =
   attrMap
     defAttr
-    [ (blueAttr, blue `on` blue),
-      (redAttr, red `on` red)
+    [ (blueAttr, Graphics.Vty.blue `on` Graphics.Vty.blue),
+      (redAttr, Graphics.Vty.red `on` Graphics.Vty.red)
     ]

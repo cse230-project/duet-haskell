@@ -38,7 +38,8 @@ data PlayState = PS
     redPos :: Board.Pos,
     -- | result
     psResult :: Board.Result (),
-    gameOver :: Bool
+    gameOver :: Bool,
+    psTick :: Int
   }
 
 init :: Int -> PlayState
@@ -46,12 +47,13 @@ init n =
   PS
     { psScore  = Score.init n,
       psBoard = Board.init,
-      psObs = Board.initObs,
+      psObs = Board.obs,
       psTurn = Board.X,
-      bluePos = Board.initBlue,
-      redPos = Board.initRed,
+      bluePos = Board.blue,
+      redPos = Board.red,
       psResult = Board.Cont (),
-      gameOver = False
+      gameOver = False,
+      psTick = 0
     }
 
 -- nextBoard :: PlayState -> Board.Result a -> Either (Board.Result ()) PlayState

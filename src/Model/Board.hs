@@ -11,15 +11,19 @@ module Model.Board
     -- * Board API
     dim,
     init,
-    initBlue,
-    initRed,
-    initObs,
+    blue,
+    red,
+    obs,
 
     -- * Moves
+    up,
     down,
     clockwise,
     counterClockwise,
     check,
+    obsReset,
+    redReset,
+    blueReset,
   )
 where
 
@@ -67,6 +71,18 @@ initBlue = Pos 35 15
 initRed :: Pos
 initRed = Pos 35 35
 
+obs :: Obs
+-- initObs = [ Pos r c | r <- [1], c <- [1..10] ]
+obs = [Pos 0 1, Pos (-25) 1, Pos (-50) 21, Pos (-75) 20]
+
+-- initObs = [Pos 0 20]
+
+blue :: Pos
+blue = Pos 35 15
+
+red :: Pos
+red = Pos 35 35
+
 -------------------------------------------------------------------------------
 
 -- | Playing a Move
@@ -85,9 +101,20 @@ data Result a
 -- | Moves
 
 -------------------------------------------------------------------------------
+up :: [Pos] -> [Pos]
+up ps = [p {pRow = pRow p - 1} | p <- ps]
 
 down :: [Pos] -> [Pos]
-down ps = [p {pRow = min (dim + 1) (pRow p + 1)} | p <- ps]
+down ps = [p {pRow = pRow p + 1} | p <- ps]
+
+obsReset :: [Pos] -> Bool
+obsReset obs = all (`elem` obs) initObs
+
+redReset :: Pos -> Bool
+redReset red = red == initRed
+
+blueReset :: Pos -> Bool
+blueReset blue = blue == initBlue
 
 check :: [Pos] -> Pos -> Pos -> Bool
 check ps blue red = collision1 || collision2 || collision3 || collision4 || collision5 || collision6
