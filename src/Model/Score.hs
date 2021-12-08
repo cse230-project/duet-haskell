@@ -29,23 +29,3 @@ updateScore :: [Pos] -> Score -> Score
 updateScore ps sc = foldr f (clear sc) ps
     where 
         f p s = if pRow p > dim then add s else s
-        
--- get :: Score -> Int
--- get sc = sc score
-
--- currRound :: Score -> Int
--- currRound Score {..} = scX + scO + scD + 1
-
--- startPlayer :: Score -> XO
--- startPlayer sc 
---   | even (currRound sc) = X
---   | otherwise           = O
-
--- winner :: Score -> Result () 
--- winner sc@Score {..}
---   | scX > scO + left = Win X
---   | scO > scX + left = Win O
---   | left == 0        = Draw
---   | otherwise        = Cont ()
---   where 
---     left             = 1 + scMax - currRound sc

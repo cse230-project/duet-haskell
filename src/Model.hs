@@ -55,16 +55,3 @@ init n =
       gameOver = False,
       psTick = 0
     }
-
--- nextBoard :: PlayState -> Board.Result a -> Either (Board.Result ()) PlayState
--- nextBoard s res = case res' of
---                     Board.Win _ -> Left res'
---                     Board.Draw  -> Left res'
---                     _           -> Right s'
---   where
---     sc'  = Score.add (psScore s) (Board.boardWinner res)
---     res' = Score.winner sc'
---     s'   = s { psScore = sc'                   -- update the score
---              , psBoard = mempty                -- clear the board
---              , psTurn  = Score.startPlayer sc' -- toggle start player
---              }

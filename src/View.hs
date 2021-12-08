@@ -1,14 +1,11 @@
 module View (view, theMap) where
 
 import Brick
-import Brick.Widgets.Border (borderWithLabel, hBorder, vBorder)
+import Brick.Widgets.Border (borderWithLabel)
 import Brick.Widgets.Border.Style (unicode)
 import Brick.Widgets.Center (center)
-import Data.List (elem, elemIndex)
-import qualified Data.Map as M
 import Graphics.Vty hiding (dim)
 import Model
-import qualified Model as Board
 import Model.Board
 import qualified Model.Board as Board
 import qualified Model.Score as Score
@@ -62,16 +59,6 @@ header s =
       printf "♢♢ Duet Game ♢♢ Level %d ♢♢ Score = %d ♢♢" (Score.speed sc) (Score.score sc)
   where 
     sc = psScore s
-  -- debug message
-  -- "Duet Game GameOver = %s, row = %d, col = %d, blueRow = %d, blueCol = %d"
-  -- (show (gameOver s))
-  -- (pRow (head p))
-  -- (pRow (head p))
-  -- (pRow b)
-  -- (pRow b)
-  -- where
-  --   p = psObs s
-  --   b = bluePos s
 
 blueAttr, redAttr :: AttrName
 blueAttr = attrName "blueAttr"
