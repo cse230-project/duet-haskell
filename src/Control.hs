@@ -1,14 +1,26 @@
 module Control where
 
-import Brick hiding (Result)
+import Brick (BrickEvent (AppEvent), EventM, Next, continue, halt)
 import qualified Brick.Types as T
 import qualified Graphics.Vty as V
 import Model
-  ( PlayState (psScore, bluePos, gameOver, psObs, psBlueDye, psRedDye, redPos, psTick, psSpeed, psSeed),
+  ( PlayState (bluePos, gameOver, psBlueDye, psObs, psRedDye, psScore, psSeed, psSpeed, psTick, redPos),
     Tick (..),
   )
 import Model.Board
-import Model.Score
+  ( Pos (pRow),
+    addBlueDye,
+    addRedDye,
+    blueReset,
+    check,
+    clockwise,
+    counterClockwise,
+    down,
+    obsReset,
+    redReset,
+    up,
+  )
+import Model.Score (clear, updateScore)
 
 -------------------------------------------------------------------------------
 
@@ -30,46 +42,51 @@ move f s = s {bluePos = f (bluePos s), redPos = f (redPos s)}
 -------------------------------------------------------------------------------
 setSpeed :: Int -> PlayState -> PlayState
 -------------------------------------------------------------------------------
-setSpeed i s = s {
-  psSpeed = if i == 1 then psSpeed s `div` 2 else psSpeed s * 2,
-  psTick = 0
-  }
+setSpeed i s =
+  s
+    { psSpeed = if i == 1 then psSpeed s `div` 2 else psSpeed s * 2,
+      psTick = 0
+    }
 
 -------------------------------------------------------------------------------
 step :: PlayState -> PlayState
 -------------------------------------------------------------------------------
 step s =
   if gameOver s
-    then s {
-      psObs = if obsReset (psSeed s) (psObs s) then psObs s else up (psObs s) (pRow (head (psObs s)) `div` 10 + 1),
-      psBlueDye = if obsReset (psSeed s) (psObs s) then psBlueDye s else up (psBlueDye s) (pRow (head (psObs s)) `div` 10 + 1),
-      psRedDye = if obsReset (psSeed s) (psObs s) then psRedDye s else up (psRedDye s) (pRow (head (psObs s)) `div` 10 + 1),
-      bluePos = if blueReset (bluePos s) then bluePos s else clockwise (bluePos s),
-      redPos = if redReset (redPos s) then redPos s else clockwise (redPos s),
-      gameOver = not (obsReset (psSeed s) (psObs s) && blueReset (bluePos s) && redReset (redPos s)),
-      psScore = clear (psScore s)
-      }
-    else s {
-      psObs = if psTick s == psSpeed s then down (psObs s) else psObs s,
-      psBlueDye = if psTick s == psSpeed s then
-        if check (psObs s) (bluePos s) then
-          down (addBlueDye (bluePos s) (psBlueDye s))
-        else
-          down (psBlueDye s)
-      else if check (psObs s) (bluePos s) then
-        addBlueDye (bluePos s) (psBlueDye s)
-      else
-        psBlueDye s,
-      psRedDye = if psTick s == psSpeed s then
-        if check (psObs s) (redPos s) then
-          down (addRedDye (redPos s) (psRedDye s))
-        else
-          down (psRedDye s)
-      else if check (psObs s) (redPos s) then
-        addRedDye (redPos s) (psRedDye s)
-      else
-        psRedDye s,
-      psScore = if psTick s == psSpeed s then updateScore (psObs s) (psScore s) (psSpeed s) else psScore s,
-      gameOver = check (psObs s) (bluePos s) || check (psObs s) (redPos s),
-      psTick = if psTick s == psSpeed s then 0 else psTick s + 1
-      }
+    then
+      s
+        { psObs = if obsReset (psSeed s) (psObs s) then psObs s else up (psObs s) (pRow (head (psObs s)) `div` 10 + 1),
+          psBlueDye = if obsReset (psSeed s) (psObs s) then psBlueDye s else up (psBlueDye s) (pRow (head (psObs s)) `div` 10 + 1),
+          psRedDye = if obsReset (psSeed s) (psObs s) then psRedDye s else up (psRedDye s) (pRow (head (psObs s)) `div` 10 + 1),
+          bluePos = if blueReset (bluePos s) then bluePos s else clockwise (bluePos s),
+          redPos = if redReset (redPos s) then redPos s else clockwise (redPos s),
+          gameOver = not (obsReset (psSeed s) (psObs s) && blueReset (bluePos s) && redReset (redPos s)),
+          psScore = clear (psScore s)
+        }
+    else
+      s
+        { psObs = if psTick s == psSpeed s then down (psObs s) else psObs s,
+          psBlueDye =
+            if psTick s == psSpeed s
+              then
+                if check (psObs s) (bluePos s)
+                  then down (addBlueDye (bluePos s) (psBlueDye s))
+                  else down (psBlueDye s)
+              else
+                if check (psObs s) (bluePos s)
+                  then addBlueDye (bluePos s) (psBlueDye s)
+                  else psBlueDye s,
+          psRedDye =
+            if psTick s == psSpeed s
+              then
+                if check (psObs s) (redPos s)
+                  then down (addRedDye (redPos s) (psRedDye s))
+                  else down (psRedDye s)
+              else
+                if check (psObs s) (redPos s)
+                  then addRedDye (redPos s) (psRedDye s)
+                  else psRedDye s,
+          psScore = if psTick s == psSpeed s then updateScore (psObs s) (psScore s) (psSpeed s) else psScore s,
+          gameOver = check (psObs s) (bluePos s) || check (psObs s) (redPos s),
+          psTick = if psTick s == psSpeed s then 0 else psTick s + 1
+        }

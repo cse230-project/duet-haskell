@@ -1,5 +1,3 @@
-{-# LANGUAGE RecordWildCards #-}
-
 module Model where
 
 import qualified Model.Board as Board

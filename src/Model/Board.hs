@@ -33,10 +33,8 @@ where
 
 import Data.List (elemIndex)
 import qualified Data.Map as M
+import System.Random (Random (randomRs), mkStdGen)
 import Prelude hiding (init)
-import System.Random
-import Data.Functor.Classes (readData)
--- import Control.Monad.Random (getRando)
 
 -------------------------------------------------------------------------------
 
@@ -76,8 +74,7 @@ initObs :: Int -> Obs
 initObs n = do
   let seed = mkStdGen n
   let randomCList = take 100 $ randomRs (0, 3) seed
-  [Pos (r * (-23)) (brickCTypes !! c) | (r, c) <- zip [0..] randomCList]
-
+  [Pos (r * (-23)) (brickCTypes !! c) | (r, c) <- zip [0 ..] randomCList]
 
 initBlue :: Pos
 initBlue = Pos 35 15
@@ -142,8 +139,11 @@ addRedDye :: Pos -> [Pos] -> [Pos]
 addRedDye p ps = p : ps
 
 check :: [Pos] -> Pos -> Bool
-check ps vessel = collision1 || collision2 || collision3 || collision4 
-  || collision5 || collision6 || collision7
+check ps vessel =
+  collision1 || collision2 || collision3 || collision4
+    || collision5
+    || collision6
+    || collision7
   where
     collision1 = Pos (pRow vessel) 1 `elem` ps && (pCol vessel < 28)
     collision2 = Pos (pRow vessel) 23 `elem` ps && (pCol vessel > 22)

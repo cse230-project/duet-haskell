@@ -1,12 +1,37 @@
 module View (view, theMap) where
 
 import Brick
+  ( AttrMap,
+    AttrName,
+    Widget,
+    attrMap,
+    attrName,
+    hBox,
+    hLimit,
+    on,
+    str,
+    vBox,
+    vLimit,
+    withAttr,
+    withBorderStyle,
+  )
 import Brick.Widgets.Border (borderWithLabel)
 import Brick.Widgets.Border.Style (unicode)
 import Brick.Widgets.Center (center)
-import Graphics.Vty hiding (dim)
+import Graphics.Vty (blue, defAttr, magenta, red)
 import Model
-import Model.Board
+  ( PlayState
+      ( bluePos,
+        gameOver,
+        psBlueDye,
+        psObs,
+        psRedDye,
+        psScore,
+        psSpeed,
+        redPos
+      ),
+  )
+import Model.Board (Pos (Pos), XO (..), dim)
 import qualified Model.Board as Board
 import qualified Model.Score as Score
 import Text.Printf (printf)
@@ -20,7 +45,6 @@ view' :: PlayState -> Widget String
 view' s =
   withBorderStyle unicode $
     borderWithLabel (str (header s)) $
-      -- vTile [ mkRow s row | row <- [1..dim] ]
       vLimit 50 $ vBox rows
   where
     rows = [hLimit 100 $ hBox $ cellsInRow r | r <- [1 .. dim]]
@@ -29,7 +53,6 @@ view' s =
 mkCell :: PlayState -> Int -> Int -> Widget n
 mkCell s r c = center (mkXO xoMb)
   where
-    -- xoMb      = psBoard s ! Pos r c
     xoMb
       | r == Board.pRow (bluePos s) && c == Board.pCol (bluePos s) = Just BlueO
       | r == Board.pRow (redPos s) && c == Board.pCol (redPos s) = Just RedO
@@ -62,20 +85,29 @@ purpleO = withAttr purpleAttr $ vBox [str "  "]
 header :: PlayState -> String
 header s
   | gameOver s =
-    printf "♢♢ Game Over! ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢"
-      (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
+    printf
+      "♢♢ Game Over! ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢"
+      (calculateLevel (psSpeed s))
+      (Score.score sc)
+      (Score.maxScore sc)
   | Score.number sc == 100 =
-    printf "♢♢ Game Clear! ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢ Press ESC to Exit ♢♢"
-    (Score.score sc) (Score.maxScore sc)
+    printf
+      "♢♢ Game Clear! ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢ Press ESC to Exit ♢♢"
+      (Score.score sc)
+      (Score.maxScore sc)
   | otherwise =
-    printf "♢♢ Duet Game ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢"
-      (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
+    printf
+      "♢♢ Duet Game ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢"
+      (calculateLevel (psSpeed s))
+      (Score.score sc)
+      (Score.maxScore sc)
   where
-      sc = psScore s
+    sc = psScore s
 
 blueAttr, redAttr :: AttrName
 blueAttr = attrName "blueAttr"
 redAttr = attrName "redAttr"
+
 purpleAttr = attrName "purpleAttr"
 
 theMap :: AttrMap
