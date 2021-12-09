@@ -54,9 +54,11 @@ header :: PlayState -> String
 header s =
   if gameOver s
     then 
-      printf "♢♢ Gameover! ♢♢ Level %d ♢♢ Score = %d ♢♢" (calculateLevel (psSpeed s)) (Score.score sc)
+      printf "♢♢ Gameover! ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢ " 
+        (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
     else
-      printf "♢♢ Duet Game ♢♢ Level %d ♢♢ Score = %d ♢♢" (calculateLevel (psSpeed s)) (Score.score sc)
+      printf "♢♢ Duet Game ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢ " 
+        (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
   where 
     sc = psScore s
     
@@ -72,8 +74,8 @@ theMap =
       (redAttr, Graphics.Vty.red `on` Graphics.Vty.red)
     ]
 
-calculateLevel :: Int -> Int
+calculateLevel :: Int -> String
 calculateLevel speed
-  | speed == 8 = 1
-  | speed == 4 = 2
-  | otherwise = 3
+  | speed == 8 = "Easy"
+  | speed == 4 = "Medium"
+  | otherwise = "Hard"

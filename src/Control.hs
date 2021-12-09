@@ -44,11 +44,12 @@ step s =
       psObs = if obsReset (psObs s) then psObs s else up (psObs s),
       bluePos = if blueReset (bluePos s) then bluePos s else clockwise (bluePos s),
       redPos = if redReset (redPos s) then redPos s else clockwise (redPos s),
-      gameOver = not (obsReset (psObs s) && blueReset (bluePos s) && redReset (redPos s))
+      gameOver = not (obsReset (psObs s) && blueReset (bluePos s) && redReset (redPos s)),
+      psScore = clear (psScore s)
       }
     else s {
       psObs = if psTick s == psSpeed s then down (psObs s) else psObs s,
-      psScore = updateScore (psObs s) (psScore s) (psSpeed s),
+      psScore = if psTick s == psSpeed s then updateScore (psObs s) (psScore s) (psSpeed s) else psScore s,
       gameOver = check (psObs s) (bluePos s) (redPos s),
       psTick = if psTick s == psSpeed s then 0 else psTick s + 1
       }

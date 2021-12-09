@@ -12,8 +12,8 @@ import Prelude
 
 data Score = Score 
   { 
-    level   :: Int,
-    score   :: Int
+    score   :: Int,
+    maxScore :: Int
   }
   deriving (Eq, Ord, Show)
 
@@ -21,7 +21,11 @@ init :: Score
 init = Score 0 0
 
 add :: Score -> Int -> Score
-add sc speed = sc { score = score sc + calculateScore speed }
+add sc speed = sc { score = score sc + calculateScore speed, 
+                    maxScore = if maxScore sc < (score sc + calculateScore speed)
+                                then score sc + calculateScore speed
+                                else maxScore sc
+                  }
 
 calculateScore :: Int -> Int
 calculateScore speed
@@ -33,6 +37,6 @@ clear :: Score -> Score
 clear sc  = sc { score = 0 }
 
 updateScore :: [Pos] -> Score -> Int -> Score
-updateScore ps sc speed = foldr f (clear sc) ps
+updateScore ps sc speed = foldr f sc ps
     where 
-        f p s = if pRow p > 35 then add s speed else s
+        f p s = if pRow p == 45 then add s speed else s
