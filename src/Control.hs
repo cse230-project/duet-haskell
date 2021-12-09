@@ -4,7 +4,7 @@ import Brick hiding (Result)
 import qualified Brick.Types as T
 import qualified Graphics.Vty as V
 import Model
-  ( PlayState (psScore, bluePos, gameOver, psObs, redPos, psTick, psSpeed),
+  ( PlayState (psScore, bluePos, gameOver, psObs, psBlueDye, psRedDye, redPos, psTick, psSpeed),
     Tick (..),
   )
 import Model.Board
@@ -41,7 +41,9 @@ step :: PlayState -> PlayState
 step s =
   if gameOver s
     then s {
-      psObs = if obsReset (psObs s) then psObs s else up (psObs s),
+      psObs = if obsReset (psObs s) then psObs s else up (psObs s) (pRow (head (psObs s)) `div` 10 + 1),
+      psBlueDye = if obsReset (psObs s) then psBlueDye s else up (psBlueDye s) (pRow (head (psObs s)) `div` 10 + 1),
+      psRedDye = if obsReset (psObs s) then psRedDye s else up (psRedDye s) (pRow (head (psObs s)) `div` 10 + 1),
       bluePos = if blueReset (bluePos s) then bluePos s else clockwise (bluePos s),
       redPos = if redReset (redPos s) then redPos s else clockwise (redPos s),
       gameOver = not (obsReset (psObs s) && blueReset (bluePos s) && redReset (redPos s)),
@@ -49,7 +51,25 @@ step s =
       }
     else s {
       psObs = if psTick s == psSpeed s then down (psObs s) else psObs s,
+      psBlueDye = if psTick s == psSpeed s then
+        if check (psObs s) (bluePos s) then
+          down (addBlueDye (bluePos s) (psBlueDye s))
+        else
+          down (psBlueDye s)
+      else if check (psObs s) (bluePos s) then
+        addBlueDye (bluePos s) (psBlueDye s)
+      else
+        psBlueDye s,
+      psRedDye = if psTick s == psSpeed s then
+        if check (psObs s) (redPos s) then
+          down (addRedDye (redPos s) (psRedDye s))
+        else
+          down (psRedDye s)
+      else if check (psObs s) (redPos s) then
+        addRedDye (redPos s) (psRedDye s)
+      else
+        psRedDye s,
       psScore = if psTick s == psSpeed s then updateScore (psObs s) (psScore s) (psSpeed s) else psScore s,
-      gameOver = check (psObs s) (bluePos s) (redPos s),
+      gameOver = check (psObs s) (bluePos s) || check (psObs s) (redPos s),
       psTick = if psTick s == psSpeed s then 0 else psTick s + 1
       }

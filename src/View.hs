@@ -33,6 +33,9 @@ mkCell s r c = center (mkXO xoMb)
     xoMb
       | r == Board.pRow (bluePos s) && c == Board.pCol (bluePos s) = Just BlueO
       | r == Board.pRow (redPos s) && c == Board.pCol (redPos s) = Just RedO
+      | Pos r c `elem` psBlueDye s && Pos r c `elem` psRedDye s = Just PurpleO
+      | Pos r c `elem` psBlueDye s = Just BlueO
+      | Pos r c `elem` psRedDye s = Just RedO
       | Pos r 1 `elem` psObs s && c < 28 = Just X
       | Pos r 23 `elem` psObs s && c > 22 = Just X
       | Pos r 21 `elem` psObs s && c > 20 && c < 30 = Just X
@@ -47,12 +50,14 @@ mkXO Nothing = blockB
 mkXO (Just X) = blockX
 mkXO (Just RedO) = redO
 mkXO (Just BlueO) = blueO
+mkXO (Just PurpleO) = purpleO
 
-blockB, blockX, blueO, redO :: Widget n
+blockB, blockX, blueO, redO, purpleO :: Widget n
 blockB = vBox [str "  "]
 blockX = vBox [str "██"]
 blueO = withAttr blueAttr $ vBox [str "  "]
 redO = withAttr redAttr $ vBox [str "  "]
+purpleO = withAttr purpleAttr $ vBox [str "  "]
 
 header :: PlayState -> String
 header s =
@@ -69,13 +74,15 @@ header s =
 blueAttr, redAttr :: AttrName
 blueAttr = attrName "blueAttr"
 redAttr = attrName "redAttr"
+purpleAttr = attrName "purpleAttr"
 
 theMap :: AttrMap
 theMap =
   attrMap
     defAttr
     [ (blueAttr, Graphics.Vty.blue `on` Graphics.Vty.blue),
-      (redAttr, Graphics.Vty.red `on` Graphics.Vty.red)
+      (redAttr, Graphics.Vty.red `on` Graphics.Vty.red),
+      (purpleAttr, Graphics.Vty.magenta `on` Graphics.Vty.magenta)
     ]
 
 calculateLevel :: Int -> String

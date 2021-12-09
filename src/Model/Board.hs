@@ -14,12 +14,16 @@ module Model.Board
     blue,
     red,
     obs,
+    blueDye,
+    redDye,
 
     -- * Moves
     up,
     down,
     clockwise,
     counterClockwise,
+    addBlueDye,
+    addRedDye,
     check,
     obsReset,
     redReset,
@@ -31,6 +35,7 @@ import Data.List (elemIndex)
 import qualified Data.Map as M
 import Prelude hiding (init)
 import System.Random 
+import Data.Functor.Classes (readData)
 -- import Control.Monad.Random (getRando)
 
 -------------------------------------------------------------------------------
@@ -47,6 +52,7 @@ data XO
   = X
   | RedO
   | BlueO
+  | PurpleO
   deriving (Eq, Show)
 
 data Pos = Pos
@@ -86,8 +92,15 @@ obs = initObs
 
 blue :: Pos
 blue = initBlue
+
 red :: Pos
 red = initRed
+
+blueDye :: [Pos]
+blueDye = []
+
+redDye :: [Pos]
+redDye = []
 
 -------------------------------------------------------------------------------
 
@@ -107,10 +120,8 @@ data Result a
 -- | Moves
 
 -------------------------------------------------------------------------------
-up :: [Pos] -> [Pos]
-up ps = [p {pRow = pRow p - n} | p <- ps]
-  where
-    n = pRow (head ps) `div` 10 + 1
+up :: [Pos] -> Int -> [Pos]
+up ps n = [p {pRow = pRow p - n} | p <- ps]
 
 down :: [Pos] -> [Pos]
 down ps = [p {pRow = pRow p + 1} | p <- ps]
@@ -124,25 +135,23 @@ redReset red = red == initRed
 blueReset :: Pos -> Bool
 blueReset blue = blue == initBlue
 
-check :: [Pos] -> Pos -> Pos -> Bool
-check ps blue red = collision1 || collision2 || collision3 || collision4 
-  || collision5 || collision6 || collision7 || collision8 || collision9 || collision10
-  || collision11 || collision12 || collision13 || collision14
+addBlueDye :: Pos -> [Pos] -> [Pos]
+addBlueDye p ps = p : ps
+
+addRedDye :: Pos -> [Pos] -> [Pos]
+addRedDye p ps = p : ps
+
+check :: [Pos] -> Pos -> Bool
+check ps vessel = collision1 || collision2 || collision3 || collision4 
+  || collision5 || collision6 || collision7
   where
-    collision1 = Pos (pRow blue) 1 `elem` ps && (pCol blue < 28)
-    collision2 = Pos (pRow red) 1 `elem` ps && (pCol red < 28)
-    collision3 = Pos (pRow blue) 23 `elem` ps && (pCol blue > 22)
-    collision4 = Pos (pRow red) 23 `elem` ps && (pCol red > 22)
-    collision5 = Pos (pRow blue) 21 `elem` ps && (pCol blue > 20) && (pCol blue < 30)
-    collision6 = Pos (pRow red) 21 `elem` ps && (pCol red > 20) && (pCol red < 30)
-    collision7 = Pos (pRow blue - 15) (-1) `elem` ps && Pos (pRow blue + 8) 1 `elem` ps && (pCol blue > 30)
-    collision8 = Pos (pRow red - 15) (-1) `elem` ps && Pos (pRow red + 8) 1 `elem` ps && (pCol red > 30)
-    collision9 = Pos (pRow blue - 15) (-1) `elem` ps && Pos (pRow blue + 8) 23 `elem` ps && (pCol blue < 20)
-    collision10 = Pos (pRow red - 15) (-1) `elem` ps && Pos (pRow red + 8) 23 `elem` ps && (pCol red < 20)
-    collision11 = Pos (pRow blue) (-1) `elem` ps && Pos (pRow blue + 23) 21 `elem` ps && (pCol blue < 28)
-    collision12 = Pos (pRow red) (-1) `elem` ps && Pos (pRow red + 23) 21 `elem` ps && (pCol red < 28)
-    collision13 = Pos (pRow blue) (-1) `elem` ps && Pos (pRow blue + 23) (-1) `elem` ps && (pCol blue > 22)
-    collision14 = Pos (pRow red) (-1) `elem` ps && Pos (pRow red + 23) (-1) `elem` ps && (pCol red > 22)
+    collision1 = Pos (pRow vessel) 1 `elem` ps && (pCol vessel < 28)
+    collision2 = Pos (pRow vessel) 23 `elem` ps && (pCol vessel > 22)
+    collision3 = Pos (pRow vessel) 21 `elem` ps && (pCol vessel > 20) && (pCol vessel < 30)
+    collision4 = Pos (pRow vessel - 15) (-1) `elem` ps && Pos (pRow vessel + 8) 1 `elem` ps && (pCol vessel > 30)
+    collision5 = Pos (pRow vessel - 15) (-1) `elem` ps && Pos (pRow vessel + 8) 23 `elem` ps && (pCol vessel < 20)
+    collision6 = Pos (pRow vessel) (-1) `elem` ps && Pos (pRow vessel + 23) 21 `elem` ps && (pCol vessel < 28)
+    collision7 = Pos (pRow vessel) (-1) `elem` ps && Pos (pRow vessel + 23) (-1) `elem` ps && (pCol vessel > 22)
 
 posList :: [Pos]
 posList = [Pos 35 15, Pos 34 15, Pos 33 15, Pos 32 15, Pos 31 16, Pos 30 16, Pos 29 17, Pos 28 18, Pos 27 19, Pos 26 20, Pos 26 21, Pos 25 22, Pos 25 23, Pos 25 24, Pos 25 25, Pos 25 26, Pos 25 27, Pos 25 28, Pos 26 29, Pos 26 30, Pos 27 31, Pos 28 32, Pos 29 33, Pos 30 34, Pos 31 34, Pos 32 35, Pos 33 35, Pos 34 35, Pos 35 35, Pos 36 35, Pos 37 35, Pos 38 35, Pos 39 34, Pos 40 34, Pos 41 33, Pos 42 32, Pos 43 31, Pos 44 30, Pos 44 29, Pos 45 28, Pos 45 27, Pos 45 26, Pos 45 25, Pos 45 24, Pos 45 23, Pos 45 22, Pos 44 21, Pos 44 20, Pos 43 19, Pos 42 18, Pos 41 17, Pos 40 16, Pos 39 16, Pos 38 15, Pos 37 15, Pos 36 15]
