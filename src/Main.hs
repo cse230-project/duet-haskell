@@ -3,14 +3,10 @@ module Main where
 import Brick
 import Brick.BChan (newBChan, writeBChan)
 import Control
-import Control.Concurrent (forkIO, threadDelay)
+import Control.Concurrent (forkIO)
 import Control.Monad (forever)
-import Data.Maybe (fromMaybe)
 import qualified Graphics.Vty as V
-import Graphics.Vty.Attributes
 import Model
-import System.Environment (getArgs)
-import Text.Read (readMaybe)
 import View
 
 -------------------------------------------------------------------------------
@@ -36,17 +32,3 @@ app =
       appStartEvent = return,
       appAttrMap = const theMap
     }
-
--- speeds = [200000, 150000, 100000]
--- getDelay :: Int -> Int
--- getDelay n =  speeds !! (n - 1)
-
--- getSpeed :: IO (Maybe Int)
--- getSpeed = do
---   args <- getArgs
---   case args of
---     (str : _) -> return (readMaybe str)
---     _ -> return Nothing
-
--- defaultSpeed :: Int
--- defaultSpeed = 1

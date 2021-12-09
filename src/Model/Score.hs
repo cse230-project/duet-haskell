@@ -3,7 +3,6 @@ module Model.Score where
 
 import Model.Board as Board
 import Data.Foldable
-import Control.Monad 
 import Prelude
 
 -- -------------------------------------------------------------------------------
