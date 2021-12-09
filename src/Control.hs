@@ -4,7 +4,7 @@ import Brick hiding (Result)
 import qualified Brick.Types as T
 import qualified Graphics.Vty as V
 import Model
-  ( PlayState (psScore, bluePos, gameOver, psObs, psBlueDye, psRedDye, redPos, psTick, psSpeed),
+  ( PlayState (psScore, bluePos, gameOver, psObs, psBlueDye, psRedDye, redPos, psTick, psSpeed, psSeed),
     Tick (..),
   )
 import Model.Board
@@ -41,12 +41,12 @@ step :: PlayState -> PlayState
 step s =
   if gameOver s
     then s {
-      psObs = if obsReset (psObs s) then psObs s else up (psObs s) (pRow (head (psObs s)) `div` 10 + 1),
-      psBlueDye = if obsReset (psObs s) then psBlueDye s else up (psBlueDye s) (pRow (head (psObs s)) `div` 10 + 1),
-      psRedDye = if obsReset (psObs s) then psRedDye s else up (psRedDye s) (pRow (head (psObs s)) `div` 10 + 1),
+      psObs = if obsReset (psSeed s) (psObs s) then psObs s else up (psObs s) (pRow (head (psObs s)) `div` 10 + 1),
+      psBlueDye = if obsReset (psSeed s) (psObs s) then psBlueDye s else up (psBlueDye s) (pRow (head (psObs s)) `div` 10 + 1),
+      psRedDye = if obsReset (psSeed s) (psObs s) then psRedDye s else up (psRedDye s) (pRow (head (psObs s)) `div` 10 + 1),
       bluePos = if blueReset (bluePos s) then bluePos s else clockwise (bluePos s),
       redPos = if redReset (redPos s) then redPos s else clockwise (redPos s),
-      gameOver = not (obsReset (psObs s) && blueReset (bluePos s) && redReset (redPos s)),
+      gameOver = not (obsReset (psSeed s) (psObs s) && blueReset (bluePos s) && redReset (redPos s)),
       psScore = clear (psScore s)
       }
     else s {

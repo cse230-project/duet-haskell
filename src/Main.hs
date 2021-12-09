@@ -8,6 +8,7 @@ import Control.Monad (forever)
 import qualified Graphics.Vty as V
 import Model
 import View
+import System.Random
 
 -------------------------------------------------------------------------------
 main :: IO ()
@@ -20,7 +21,8 @@ main = do
       -- threadDelay (getDelay speed) -- decides how fast your game moves
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
-  res <- customMain initialVty buildVty (Just chan) app Model.init
+  n <- randomIO :: IO Int
+  res <- customMain initialVty buildVty (Just chan) app $ Model.init n
   print (gameOver res)
 
 app :: App PlayState Tick String

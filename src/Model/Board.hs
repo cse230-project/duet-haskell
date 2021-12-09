@@ -34,7 +34,7 @@ where
 import Data.List (elemIndex)
 import qualified Data.Map as M
 import Prelude hiding (init)
-import System.Random 
+import System.Random
 import Data.Functor.Classes (readData)
 -- import Control.Monad.Random (getRando)
 
@@ -71,10 +71,10 @@ init = M.empty
 brickCTypes :: [Int]
 brickCTypes = [1, 23, 21, -1]
 
-initObs :: Obs
+initObs :: Int -> Obs
 -- initObs = [Pos 0 1, Pos (-25) 1, Pos (-50) 23, Pos (-75) 21]
-initObs = do
-  let seed = mkStdGen 0
+initObs n = do
+  let seed = mkStdGen n
   let randomCList = take 100 $ randomRs (0, 3) seed
   [Pos (r * (-23)) (brickCTypes !! c) | (r, c) <- zip [0..] randomCList]
 
@@ -85,7 +85,7 @@ initBlue = Pos 35 15
 initRed :: Pos
 initRed = Pos 35 35
 
-obs :: Obs
+obs :: Int -> Obs
 obs = initObs
 
 -- initObs = [Pos 0 20]
@@ -126,8 +126,8 @@ up ps n = [p {pRow = pRow p - n} | p <- ps]
 down :: [Pos] -> [Pos]
 down ps = [p {pRow = pRow p + 1} | p <- ps]
 
-obsReset :: [Pos] -> Bool
-obsReset obs = all (`elem` obs) initObs
+obsReset :: Int -> [Pos] -> Bool
+obsReset n obs = all (`elem` obs) $ initObs n
 
 redReset :: Pos -> Bool
 redReset red = red == initRed

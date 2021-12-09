@@ -30,23 +30,25 @@ data PlayState = PS
     psObs :: Board.Obs,       -- | positions of all obs
     bluePos :: Board.Pos,     -- | blue vessel
     redPos :: Board.Pos,      -- | red vessel
-    psBlueDye :: [Board.Pos],   -- | blue dye
-    psRedDye :: [Board.Pos],    -- | red dye
+    psBlueDye :: [Board.Pos], -- | blue dye
+    psRedDye :: [Board.Pos],  -- | red dye
     gameOver :: Bool,         -- | game status
     psTick :: Int,            -- | time
-    psSpeed :: Int            -- | speed of moving vessels
+    psSpeed :: Int,           -- | speed of moving vessels
+    psSeed :: Int            -- | seed for random number generator
   }
 
-init :: PlayState
-init = do
+init :: Int -> PlayState
+init n = do
   PS
     { psScore  = Score.init,
-      psObs = Board.obs,
+      psObs = Board.obs n,
       bluePos = Board.blue,
       redPos = Board.red,
       psBlueDye = Board.blueDye,
       psRedDye = Board.redDye,
       gameOver = False,
       psTick = 0,
-      psSpeed = 8
+      psSpeed = 8,
+      psSeed = n
     }
