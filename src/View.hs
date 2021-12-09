@@ -60,17 +60,19 @@ redO = withAttr redAttr $ vBox [str "  "]
 purpleO = withAttr purpleAttr $ vBox [str "  "]
 
 header :: PlayState -> String
-header s =
-  if gameOver s
-    then 
-      printf "♢♢ Gameover! ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢ " 
-        (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
-    else
-      printf "♢♢ Duet Game ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢ " 
-        (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
-  where 
-    sc = psScore s
-    
+header s
+  | gameOver s =
+    printf "♢♢ Game Over! ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢"
+      (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
+  | Score.number sc == 100 =
+    printf "♢♢ Game Clear! ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢ Press ESC to Exit ♢♢"
+    (Score.score sc) (Score.maxScore sc)
+  | otherwise =
+    printf "♢♢ Duet Game ♢♢ %s Mode ♢♢ Score = %d ♢♢ Highest Score = %d ♢♢"
+      (calculateLevel (psSpeed s)) (Score.score sc) (Score.maxScore sc)
+  where
+      sc = psScore s
+
 blueAttr, redAttr :: AttrName
 blueAttr = attrName "blueAttr"
 redAttr = attrName "redAttr"

@@ -17,10 +17,10 @@ testCheck1 = TestCase(assertEqual "check1" True (Board.check [Board.Pos 30 1](Bo
 testCheck2 = TestCase(assertEqual "check2" False (Board.check [Board.Pos 30 23](Board.Pos 30 16)))
 
 -- test Model/Score.hs
-testAddScore = TestCase(assertEqual "add" (Score.Score 1 1) (Score.add (Score.Score 0 0) 8))
-testMaxScore = TestCase(assertEqual "max" (Score.Score 2 5) (Score.add (Score.Score 0 5) 4))
-testClearScore = TestCase(assertEqual "clear" (Score.Score 0 100) (Score.clear (Score.Score 10 100)))
-testUpdateScore = TestCase(assertEqual "update" (Score.Score 3 10) (Score.updateScore [Board.Pos 45 1] (Score.Score 0 10) 2))
+testAddScore = TestCase(assertEqual "add" (Score.Score 1 1 1) (Score.add (Score.Score 0 0 0) 8))
+testMaxScore = TestCase(assertEqual "max" (Score.Score 2 5 1) (Score.add (Score.Score 0 5 0) 4))
+testClearScore = TestCase(assertEqual "clear" (Score.Score 0 100 0) (Score.clear (Score.Score 10 100 5)))
+testUpdateScore = TestCase(assertEqual "update" (Score.Score 3 10 1) (Score.updateScore [Board.Pos 45 1] (Score.Score 0 10 0) 2))
 
 main :: IO ()
 main = do

@@ -8,7 +8,7 @@ Members: Jiachen Chen, Yiran Chen, Peizhen Wu
 
 We would like to implement a simplified version of the [Duet Game](https://apps.apple.com/us/app/duet-game/id634235735), developed by [Kumobius Games](https://apps.apple.com/us/developer/kumobius/id449069247), in Haskell. The Duet-Haskell application is a single player game where players control two colorured orbs to dodge randomly incoming obstacles.
 
-The stages will be generated from predefined configuration files. Once the player starts the game, the application takes the shapes and speed of the obstacles from the configuration file, adds randomness, and renders the scene. We will provide multiple configuration files with different difficulty levels that the player can start with.
+In the game, players need to avoid the dropping obstacles. Once the player starts the game, the application randomly generates 100 obstacles in 4 types. The players can adjust the difficulty levels with obtacles dropping in 3 different speeds.
 
 ![Original Duet Game screenshot](/duet_game.jpg)
 
@@ -16,16 +16,26 @@ The stages will be generated from predefined configuration files. Once the playe
 
 The rules are simple: control two orbs in sync, survive against all obstacles and earn as many points as possible.
 
-1. Players will hold “A” and “D” (or self-defined keys in configuration file) to control the rotation of two orbs simultaneously in either clockwise or counterclockwise directions. When players release the key, the two orbs stop rotating.
-2. Players will earn points for avoiding bricks based on the difficulty and speed.
-3. The game will end once an orb crashes into an obstacle.
+1. Players will hold Left or Right key to control the rotation of two orbs simultaneously in either clockwise or counterclockwise directions. When players release the key, the two orbs stop rotating.
+2. Players will press Up key or Down key to control the speed of dropping bricks. We have 3 predefined difficulties: easy, medium and hard.
+3. Players will earn points for avoiding bricks based on the difficulty and speed.
+4. The game will revert to the beginning stage once an orb crashes into an obstacle.
+5. The game is clear if players avoid all 100 randomly generated bricks.
 
 ## Goal
 
-1. Set up the canvas and basic shapes (e.g. orbs, bricks)
-2. Implement game logic (e.g. collision, movement, earning points)
-3. Define the format of configuration files, and handle the logic of reading and parsing files
-4. Good to have: difference brick types, irregular movement of bricks, leaderboard
+- [x] 1. Set up the canvas and basic shapes (e.g. orbs, bricks)
+- [x] 2. Implement game logic (e.g. collision, movement, earning points)
+- [x] 3. Implement UI to display game info: difficulty, score, highest score, game status
+- [x] 4. Allow different difficulties
+- [x] 5. Generate different brick types randomly
+- [x] 6. Revert to beginning stage once hitting an obstacle
+- [x] 7. Color the collision point
+
+## Instructions
+- Build with `stack build`
+- Start game with `stack run`
+- Test with `stack test`
 
 ## Milestone 2: Updates
 
