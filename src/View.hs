@@ -33,9 +33,9 @@ mkCell s r c = center (mkXO xoMb)
     xoMb
       | r == Board.pRow (bluePos s) && c == Board.pCol (bluePos s) = Just BlueO
       | r == Board.pRow (redPos s) && c == Board.pCol (redPos s) = Just RedO
-      | Pos r 1 `elem` psObs s && c < 30 = Just X
-      | Pos r 21 `elem` psObs s && c > 20 = Just X
-      | Pos r 20 `elem` psObs s && c > 19 && c < 31 = Just X
+      | Pos r 1 `elem` psObs s && c < 28 = Just X
+      | Pos r 23 `elem` psObs s && c > 22 = Just X
+      | Pos r 21 `elem` psObs s && c > 20 && c < 30 = Just X
       | otherwise = Nothing
 
 mkXO :: Maybe XO -> Widget n
@@ -54,12 +54,12 @@ header :: PlayState -> String
 header s =
   if gameOver s
     then 
-      printf "♢♢ Gameover! ♢♢ Level %d ♢♢ Score = %d ♢♢" (Score.speed sc) (Score.score sc)
+      printf "♢♢ Gameover! ♢♢ Level %d ♢♢ Score = %d ♢♢" (calculateLevel (psSpeed s)) (Score.score sc)
     else
-      printf "♢♢ Duet Game ♢♢ Level %d ♢♢ Score = %d ♢♢" (Score.speed sc) (Score.score sc)
+      printf "♢♢ Duet Game ♢♢ Level %d ♢♢ Score = %d ♢♢" (calculateLevel (psSpeed s)) (Score.score sc)
   where 
     sc = psScore s
-
+    
 blueAttr, redAttr :: AttrName
 blueAttr = attrName "blueAttr"
 redAttr = attrName "redAttr"
@@ -71,3 +71,9 @@ theMap =
     [ (blueAttr, Graphics.Vty.blue `on` Graphics.Vty.blue),
       (redAttr, Graphics.Vty.red `on` Graphics.Vty.red)
     ]
+
+calculateLevel :: Int -> Int
+calculateLevel speed
+  | speed == 8 = 1
+  | speed == 4 = 2
+  | otherwise = 3

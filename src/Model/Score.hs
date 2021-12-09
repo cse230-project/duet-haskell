@@ -4,6 +4,7 @@ module Model.Score where
 import Model.Board as Board
 import Data.Foldable
 import Control.Monad 
+import Prelude
 
 -- -------------------------------------------------------------------------------
 -- -- | Score --------------------------------------------------------------------
@@ -11,21 +12,27 @@ import Control.Monad
 
 data Score = Score 
   { 
-    speed   :: Int,
+    level   :: Int,
     score   :: Int
   }
   deriving (Eq, Ord, Show)
 
-init :: Int -> Score
-init n = Score n 0
+init :: Score
+init = Score 0 0
 
-add :: Score -> Score
-add sc  = sc { score = score sc + speed sc }
+add :: Score -> Int -> Score
+add sc speed = sc { score = score sc + calculateScore speed }
+
+calculateScore :: Int -> Int
+calculateScore speed
+  | speed == 8 = 1
+  | speed == 4 = 2
+  | otherwise = 3
 
 clear :: Score -> Score
 clear sc  = sc { score = 0 }
 
-updateScore :: [Pos] -> Score -> Score
-updateScore ps sc = foldr f (clear sc) ps
+updateScore :: [Pos] -> Score -> Int -> Score
+updateScore ps sc speed = foldr f (clear sc) ps
     where 
-        f p s = if pRow p > dim then add s else s
+        f p s = if pRow p > 35 then add s speed else s

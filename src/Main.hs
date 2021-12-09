@@ -16,7 +16,7 @@ import View
 -------------------------------------------------------------------------------
 main :: IO ()
 main = do
-  speed <- fromMaybe defaultSpeed <$> getSpeed
+  -- speed <- fromMaybe defaultSpeed <$> getSpeed
   chan <- newBChan 10
   forkIO $
     forever $ do
@@ -24,8 +24,8 @@ main = do
       -- threadDelay (getDelay speed) -- decides how fast your game moves
   let buildVty = V.mkVty V.defaultConfig
   initialVty <- buildVty
-  res <- customMain initialVty buildVty (Just chan) app (Model.init speed)
-  print (psResult res)
+  res <- customMain initialVty buildVty (Just chan) app Model.init
+  print (gameOver res)
 
 app :: App PlayState Tick String
 app =
@@ -37,16 +37,16 @@ app =
       appAttrMap = const theMap
     }
 
-speeds = [200000, 150000, 100000]
-getDelay :: Int -> Int
-getDelay n =  speeds !! (n - 1)
+-- speeds = [200000, 150000, 100000]
+-- getDelay :: Int -> Int
+-- getDelay n =  speeds !! (n - 1)
 
-getSpeed :: IO (Maybe Int)
-getSpeed = do
-  args <- getArgs
-  case args of
-    (str : _) -> return (readMaybe str)
-    _ -> return Nothing
+-- getSpeed :: IO (Maybe Int)
+-- getSpeed = do
+--   args <- getArgs
+--   case args of
+--     (str : _) -> return (readMaybe str)
+--     _ -> return Nothing
 
-defaultSpeed :: Int
-defaultSpeed = 1
+-- defaultSpeed :: Int
+-- defaultSpeed = 1

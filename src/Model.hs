@@ -26,32 +26,23 @@ data State
   | Outro
 
 data PlayState = PS
-  { psScore  :: Score.Score,     -- ^ current score
-    psBoard :: Board.Board,
-    -- | current board
-    psObs :: Board.Obs,
-    -- | whose turn
-    psTurn :: Board.XO,
-    -- | blue vessel
-    bluePos :: Board.Pos,
-    -- | red
-    redPos :: Board.Pos,
-    -- | result
-    psResult :: Board.Result (),
-    gameOver :: Bool,
-    psTick :: Int
+  { psScore  :: Score.Score,  -- | current score
+    psObs :: Board.Obs,       -- | positions of all obs
+    bluePos :: Board.Pos,     -- | blue vessel
+    redPos :: Board.Pos,      -- | red vessel
+    gameOver :: Bool,         -- | game status
+    psTick :: Int,            -- | time
+    psSpeed :: Int            -- | speed of moving vessels
   }
 
-init :: Int -> PlayState
-init n =
+init :: PlayState
+init = do
   PS
-    { psScore  = Score.init n,
-      psBoard = Board.init,
+    { psScore  = Score.init,
       psObs = Board.obs,
-      psTurn = Board.X,
       bluePos = Board.blue,
       redPos = Board.red,
-      psResult = Board.Cont (),
       gameOver = False,
-      psTick = 0
+      psTick = 0,
+      psSpeed = 8
     }
