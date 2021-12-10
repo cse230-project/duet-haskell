@@ -6,7 +6,8 @@ import Control (control)
 import Control.Concurrent (forkIO)
 import Control.Monad (forever)
 import qualified Graphics.Vty as V
-import Model (PlayState (gameOver), Tick (..), init)
+import Model (PlayState (psScore), Tick (..), init)
+import qualified Model.Score as Score
 import System.Random (randomIO)
 import View (theMap, view)
 
@@ -21,7 +22,7 @@ main = do
   initialVty <- buildVty
   n <- randomIO :: IO Int
   res <- customMain initialVty buildVty (Just chan) app $ Model.init n
-  print (gameOver res)
+  putStrLn ("Highest score: " ++ show (Score.maxScore $ psScore res))
 
 app :: App PlayState Tick String
 app =

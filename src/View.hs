@@ -66,6 +66,7 @@ mkCell s r c = center (mkXO xoMb)
       | Pos (r - 15) (-1) `elem` psObs s && Pos (r + 8) 23 `elem` psObs s && c < 20 = Just X
       | Pos r (-1) `elem` psObs s && Pos (r + 23) 21 `elem` psObs s && c < 28 = Just X
       | Pos r (-1) `elem` psObs s && Pos (r + 23) (-1) `elem` psObs s && c > 22 = Just X
+      | Pos r (-1) `elem` psObs s && notElem (Pos (r + 23) 1) (psObs s) && notElem (Pos (r + 23) 23) (psObs s) && c > 20 && c < 30 = Just X
       | otherwise = Nothing
 
 mkXO :: Maybe XO -> Widget n
